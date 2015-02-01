@@ -14,6 +14,14 @@ deezerImportServices.factory('DeezerSearch', ['$resource',
 	}
 ]);
 
+deezerImportServices.factory('DeezerHistory', ['$resource', 
+	function($resource) {
+		return $resource('http://api.deezer.com/user/:userId/history', {callback: 'JSON_CALLBACK', output: 'jsonp'}, {
+			get: {method: 'JSONP'}
+		});
+	}
+]);
+
 /*
 deezerImportServices.factory('LastfmService', ['$resource', 
 	function($resource) {

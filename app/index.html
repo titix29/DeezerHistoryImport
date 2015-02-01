@@ -17,13 +17,33 @@
 		<h1>Deezer stuff</h1>
 		<p>
 		Deezer user <input ng-model="userName" />
-		<input type="button" value="Search" ng-click="searchUser();" />
+		<input type="button" value="Search" ng-click="searchUser();" /> <br />
+		<!-- Retrieve token from http://developers.deezer.com/api/explorer -->
+		Deezer access token <input ng-model="deezerAccessToken" />
 		</p>
 
 		<p>
 			Id : <span>{{deezerUser.id}}</span> <br />
 			Name : <span>{{deezerUser.name}}</span> <br />
 			<img ng-src="{{deezerUser.picture}}" />
+
+			<h2>History</h2>
+			<table>
+				<thead>
+					<tr>
+						<td>Date</td>
+						<td>Title</td>
+						<td>Artist</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="track in deezerTracks">
+						<td>{{track.timestamp}}</td>
+						<td>{{track.title}}</td>
+						<td>{{track.artist.name}}</td>
+					</tr>
+				</tbody>
+			</table>
 		</p>
 	</div>
 	
