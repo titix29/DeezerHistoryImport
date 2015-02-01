@@ -19,7 +19,7 @@
 		Deezer user <input ng-model="userName" />
 		<input type="button" value="Search" ng-click="searchUser();" /> <br />
 		<!-- Retrieve token from http://developers.deezer.com/api/explorer -->
-		Deezer access token <input ng-model="deezerAccessToken" />
+		Deezer access token <input ng-model="accessToken" />
 		</p>
 
 		<p>
@@ -47,9 +47,19 @@
 		</p>
 	</div>
 	
-	<div>
+	<div ng-controller="LastfmController">
 		<h1>Last.fm stuff</h1>
-	
+		<p>
+			Last.fm user <input ng-model="userName" />
+			<input type="button" value="Search" ng-click="searchUser();" /> <br />
+			Last.fm access token <input ng-model="accessToken" />
+		</p>
+
+		<p>
+			Id : <span>{{lastfmUser.id}}</span> <br />
+			Name : <span>{{lastfmUser.name}}</span> <br />
+			<img ng-src="{{lastfmUser.image[3]['#text']}}" />
+		</p>
 	</div>
 
 </body>

@@ -22,10 +22,8 @@ deezerImportServices.factory('DeezerHistory', ['$resource',
 	}
 ]);
 
-/*
 deezerImportServices.factory('LastfmService', ['$resource', 
 	function($resource) {
-	
+		return $resource('http://ws.audioscrobbler.com/2.0', {method: 'user.getinfo', format: 'json'});
 	}
 ]);
-*/
