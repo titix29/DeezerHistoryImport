@@ -5,8 +5,9 @@ var deezerImportControllers = angular.module('deezerImportControllers', []);
 
 deezerImportControllers.controller('DeezerController', ['$scope', 'DeezerSearch', 'DeezerHistory', 
 	function ($scope, DeezerSearch, DeezerHistory) {
-		$scope.userName = '';
-		$scope.accessToken = 'frLhXvSvt054ce31a9d1108mBGcXxUu54ce31a9d114ctj3mm4j';
+		$scope.userName = 'titixies';
+		// get it from http://developers.deezer.com/api/explorer
+		$scope.accessToken = 'frOjVP0TYi54ce6462d6fd04Nu5oCTZ54ce6462d7008Bum6Qs5';
 		$scope.deezerUser = {};
 		$scope.deezerTracks = {};
 
@@ -42,7 +43,7 @@ deezerImportControllers.controller('DeezerController', ['$scope', 'DeezerSearch'
 
 deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService', 
 	function ($scope, LastfmService) {
-		$scope.userName = '';
+		$scope.userName = 'titix29';
 		// cf. http://www.lastfm.fr/api/accounts
 		$scope.api_key = '0d464d63b340f345585d8321599a91c4';
 		$scope.accessToken = '';
@@ -52,10 +53,39 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 			console.log('Searching Lastfm for user ' + $scope.userName);
 			
 			// Call last.fm search
-			LastfmService.get({user: $scope.userName, api_key: $scope.api_key}, function(data) {
-				$scope.lastfmUser = data.user;
-				console.log('Found user ' + $scope.lastfmUser.name);
+			LastfmService.get($scope.userName, $scope.api_key)
+				.success(function(data) {
+					$scope.lastfmUser = data.user;
+					console.log('Found user ' + $scope.lastfmUser.name);
+					
+					$scope.getToken();
+				});
+		}
+		
+		$scope.getToken = function() {
+			LastfmService.getToken(function(data) {
+				console.log('getToken returned : ' + data.token);
+				$scope.accessToken = data.token;
+				
+				// needed the 1st time (TODO: find out why)
+				$scope.$apply();
 			});
+		}
+		
+		$scope.sendTracks = function() {
+			var deezerDiv = document.getElementById('deezerDiv');
+			var deezerScope = angular.element(deezerDiv).scope();
+		
+		
+			var tracks = [deezerScope.deezerTracks[0], deezerScope.deezerTracks[1]];
+			var successFn = function(data) {
+				console.log('Scrobble returned : ' + data);
+			}
+			var errorFn = function(data) {
+				console.error('Scrobble returned : ' + data);
+			}
+			
+			LastfmService.sendTracks(tracks, successFn, errorFn);
 		}
 	}
 ]);
