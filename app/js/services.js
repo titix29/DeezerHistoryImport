@@ -40,33 +40,21 @@ deezerImportServices.factory('LastfmService', ['$http', function($http) {
 			srv.auth.getToken({success: successFn});
 		},
 		
-		sendTracks: function(tracks, successFn, errorFn) {
-			// cf. process in http://www.lastfm.fr/api/desktopauth (our app is not web-visible)
-			
-			
-			var lastfmErrorFn = function(data) {
-				console.error(data);
-			};
-			
-			var sessionSuccessFn = function(data) {
-				console.log('Session token : ' + data);
-			};
-			
-			var tokenSuccessFn = function(data) {
-				var token = data;
-				console.log('LastFM token : ' + token);
-				// lastFM.auth.getSession(token, {success: sessionSuccessFn, error: lastfmErrorFn});
-			};
-			
-			// launch last.fm calls
-			// lastFM.auth.getToken({success: tokenSuccessFn, error: lastfmErrorFn});
+		getSession: function(accessToken, successFn) {
+			var srv = getLastFM();
+			srv.auth.getSession({token: accessToken}, {success: successFn});
+		},
+		
+		sendTracks: function(tracks, session, successFn, errorFn) {
+			var srv = getLastFM();
+			srv.track.scrobble(tracks, session, {success: successFn, error: errorFn});
 		}
 	}
 }]);
 
 function getLastFM() {
 	var key = '0d464d63b340f345585d8321599a91c4';
-	var secret = 'e59e0067bd6bd8979401ad733a151f65';
+	var secret = '';
 	var lastFM = new LastFM({
 		apiKey: key,
 		apiSecret: secret

@@ -7,7 +7,7 @@ deezerImportControllers.controller('DeezerController', ['$scope', 'DeezerSearch'
 	function ($scope, DeezerSearch, DeezerHistory) {
 		$scope.userName = 'titixies';
 		// get it from http://developers.deezer.com/api/explorer
-		$scope.accessToken = 'frOjVP0TYi54ce6462d6fd04Nu5oCTZ54ce6462d7008Bum6Qs5';
+		$scope.accessToken = 'FILLME';
 		$scope.deezerUser = {};
 		$scope.deezerTracks = {};
 
@@ -48,6 +48,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 		$scope.api_key = '0d464d63b340f345585d8321599a91c4';
 		$scope.accessToken = '';
 		$scope.lastfmUser = {};
+		$scope.session = {};
 
 		$scope.searchUser = function() {
 			console.log('Searching Lastfm for user ' + $scope.userName);
@@ -72,12 +73,20 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 			});
 		}
 		
+		$scope.getSession = function() {
+			LastfmService.getSession($scope.accessToken, function(data) {
+				console.log('getSession returned : ' + data.session);
+				$scope.session = data.session;
+				$scope.$apply();
+			});
+		}
+		
 		$scope.sendTracks = function() {
 			var deezerDiv = document.getElementById('deezerDiv');
 			var deezerScope = angular.element(deezerDiv).scope();
 		
-		
 			var tracks = [deezerScope.deezerTracks[0], deezerScope.deezerTracks[1]];
+			var lastfmTracks = convertTrackInfo(tracks);
 			var successFn = function(data) {
 				console.log('Scrobble returned : ' + data);
 			}
@@ -85,7 +94,20 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 				console.error('Scrobble returned : ' + data);
 			}
 			
-			LastfmService.sendTracks(tracks, successFn, errorFn);
+			LastfmService.sendTracks(lastfmTracks, $scope.session, successFn, errorFn);
 		}
 	}
 ]);
+
+function convertTrackInfo(tracks) {
+	// convert last.fm to deezer track
+	return tracks.map(function(track) {
+		return {
+			artist: track.artist.name,
+			track: track.title,
+			timestamp: track.timestamp,
+			album: track.album.title,
+			chosenByUser: 1
+		};
+	});
+}
