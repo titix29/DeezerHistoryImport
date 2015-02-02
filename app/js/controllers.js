@@ -9,7 +9,8 @@ deezerImportControllers.controller('DeezerController', ['$scope', 'DeezerSearch'
 		// get it from http://developers.deezer.com/api/explorer
 		$scope.accessToken = 'frZwXUOfX854cfde31bedf837TfU4ql54cfde31bee38u1sdIk2';
 		$scope.deezerUser = {};
-		$scope.deezerTracks = {};
+		$scope.deezerTracks = [];
+		$scope.pagesLoaded = 0;
 
 		$scope.searchUser = function() {
 			console.log('Searching Deezer for user ' + $scope.userName);
@@ -26,13 +27,12 @@ deezerImportControllers.controller('DeezerController', ['$scope', 'DeezerSearch'
 
 		$scope.getUserHistory = function() {
 			console.log('Getting history for user ' + $scope.deezerUser.name);
+			var indexToLoad = 50 * $scope.pagesLoaded;
 
-			DeezerHistory.get({userId: $scope.deezerUser.id, access_token: $scope.accessToken}, function(data) {
+			DeezerHistory.get({userId: $scope.deezerUser.id, access_token: $scope.accessToken, index: indexToLoad}, function(data) {
 				if (!data.error) {
-					$scope.deezerTracks = data.data;
-
-					var nextUrl = data.next;
-					console.log('Next url is : ' + nextUrl);
+					$scope.deezerTracks = $scope.deezerTracks.concat(data.data);
+					$scope.pagesLoaded++;
 				} else {
 					console.error('Deezer history returned error : ' + data.error.message);
 				}
@@ -69,7 +69,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 				console.log('getToken returned : ' + data.token);
 				$scope.accessToken = data.token;
 				
-				// needed the 1st time (TODO: find out why)
+				// needed because we are in a sub-function ?
 				$scope.$apply();
 			});
 		}
@@ -86,7 +86,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 			var deezerDiv = document.getElementById('deezerDiv');
 			var deezerScope = angular.element(deezerDiv).scope();
 		
-			// convert last.fm to deezer track
+			// convert deezer to lastfm tracks
 			var lastfmTracks = deezerScope.deezerTracks.map(function(track) {
 				return {
 					artist: track.artist.name,
