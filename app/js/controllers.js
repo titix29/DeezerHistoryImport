@@ -46,8 +46,8 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 		$scope.userName = 'titix29';
 		// cf. http://www.lastfm.fr/api/accounts
 		$scope.api_key = '0d464d63b340f345585d8321599a91c4';
-		var secret = 'FILL_ME';
-		$scope.accessToken = 'FILL_ME';
+		var secret = 'FILL-ME';
+		$scope.accessToken = 'FILL-ME';
 		$scope.lastfmUser = {};
 		$scope.session = {};
 
@@ -97,19 +97,15 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 				};
 			});
 			
-			var successFn = function(data) {
-				console.log('Scrobble returned : ' + data);
-			}
-			var errorFn = function(data) {
-				console.error('Scrobble returned : ' + data);
-			}
-
 			// last.fm supports 50 elements batches
 			// cf. http://stackoverflow.com/questions/11318680/split-array-into-chunks-of-n-length for splicing
 			var batchSize = 50;
 			while(lastfmTracks.length > 0) {
-				LastfmService.sendTracks(lastfmTracks.splice(0, batchSize), $scope.session, $scope.api_key, secret, successFn, errorFn);
+				LastfmService.sendTracks(lastfmTracks.splice(0, batchSize), $scope.session, $scope.api_key, secret);
 			}
+			
+			// DEBUG : send last track only
+			// LastfmService.sendTracks(lastfmTracks[0], $scope.session, $scope.api_key, secret);
 		}
 	}
 ]);
