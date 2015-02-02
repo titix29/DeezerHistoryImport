@@ -35,31 +35,26 @@ deezerImportServices.factory('LastfmService', ['$http', function($http) {
 			});
 		},
 		
-		getToken: function(successFn) {
-			var srv = getLastFM();
+		getToken: function(apiKey, secret, successFn) {
+			var srv = getLastFM(apiKey, secret);
 			srv.auth.getToken({success: successFn});
 		},
 		
-		getSession: function(accessToken, successFn) {
-			var srv = getLastFM();
+		getSession: function(accessToken, apiKey, secret, successFn) {
+			var srv = getLastFM(apiKey, secret);
 			srv.auth.getSession({token: accessToken}, {success: successFn});
 		},
 		
-		sendTracks: function(tracks, session, successFn, errorFn) {
-			var srv = getLastFM();
+		sendTracks: function(tracks, session, apiKey, secret, successFn, errorFn) {
+			var srv = getLastFM(apiKey, secret);
 			srv.track.scrobble(tracks, session, {success: successFn, error: errorFn});
 		}
 	}
 }]);
 
-function getLastFM() {
-	var key = '0d464d63b340f345585d8321599a91c4';
-	var secret = '';
-	var lastFM = new LastFM({
+function getLastFM(key, secret) {
+	return new LastFM({
 		apiKey: key,
 		apiSecret: secret
 	});
-	console.log('Created lastFM object: ' + lastFM);
-	
-	return lastFM;
 }

@@ -7,7 +7,7 @@ deezerImportControllers.controller('DeezerController', ['$scope', 'DeezerSearch'
 	function ($scope, DeezerSearch, DeezerHistory) {
 		$scope.userName = 'titixies';
 		// get it from http://developers.deezer.com/api/explorer
-		$scope.accessToken = 'FILLME';
+		$scope.accessToken = 'frZwXUOfX854cfde31bedf837TfU4ql54cfde31bee38u1sdIk2';
 		$scope.deezerUser = {};
 		$scope.deezerTracks = {};
 
@@ -46,7 +46,8 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 		$scope.userName = 'titix29';
 		// cf. http://www.lastfm.fr/api/accounts
 		$scope.api_key = '0d464d63b340f345585d8321599a91c4';
-		$scope.accessToken = '';
+		var secret = 'FILL_ME';
+		$scope.accessToken = 'FILL_ME';
 		$scope.lastfmUser = {};
 		$scope.session = {};
 
@@ -64,7 +65,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 		}
 		
 		$scope.getToken = function() {
-			LastfmService.getToken(function(data) {
+			LastfmService.getToken($scope.api_key, secret, function(data) {
 				console.log('getToken returned : ' + data.token);
 				$scope.accessToken = data.token;
 				
@@ -74,7 +75,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 		}
 		
 		$scope.getSession = function() {
-			LastfmService.getSession($scope.accessToken, function(data) {
+			LastfmService.getSession($scope.accessToken, $scope.api_key, secret, function(data) {
 				console.log('getSession returned : ' + data.session);
 				$scope.session = data.session;
 				$scope.$apply();
@@ -85,29 +86,30 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 			var deezerDiv = document.getElementById('deezerDiv');
 			var deezerScope = angular.element(deezerDiv).scope();
 		
-			var tracks = [deezerScope.deezerTracks[0], deezerScope.deezerTracks[1]];
-			var lastfmTracks = convertTrackInfo(tracks);
+			// convert last.fm to deezer track
+			var lastfmTracks = deezerScope.deezerTracks.map(function(track) {
+				return {
+					artist: track.artist.name,
+					track: track.title,
+					timestamp: track.timestamp,
+					album: track.album.title,
+					chosenByUser: 1
+				};
+			});
+			
 			var successFn = function(data) {
 				console.log('Scrobble returned : ' + data);
 			}
 			var errorFn = function(data) {
 				console.error('Scrobble returned : ' + data);
 			}
-			
-			LastfmService.sendTracks(lastfmTracks, $scope.session, successFn, errorFn);
+
+			// last.fm supports 50 elements batches
+			// cf. http://stackoverflow.com/questions/11318680/split-array-into-chunks-of-n-length for splicing
+			var batchSize = 50;
+			while(lastfmTracks.length > 0) {
+				LastfmService.sendTracks(lastfmTracks.splice(0, batchSize), $scope.session, $scope.api_key, secret, successFn, errorFn);
+			}
 		}
 	}
 ]);
-
-function convertTrackInfo(tracks) {
-	// convert last.fm to deezer track
-	return tracks.map(function(track) {
-		return {
-			artist: track.artist.name,
-			track: track.title,
-			timestamp: track.timestamp,
-			album: track.album.title,
-			chosenByUser: 1
-		};
-	});
-}

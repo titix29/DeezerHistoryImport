@@ -843,8 +843,11 @@ function LastFM(options){
 
 			string += apiSecret;
 
-			/* Needs lastfm.api.md5.js. */
-			return md5(string);
+			/* Needs lastfm.api.md5.js. 
+			Xavier : use another MD5 lib because lastfm.api.md5.js does not handle well encoding (ex: trackName: 'Une année sans lumière')
+			// return md5(string);
+			*/
+			return CryptoJS.MD5(string);
 		}
 	};
 }
