@@ -40,7 +40,7 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="track in deezerTracks">
-						<td>{{track.timestamp}}</td>
+						<td>{{track.timestamp * 1000 | date : 'dd/MM/yy HH:mm'}}</td>
 						<td>{{track.title}}</td>
 						<td>{{track.artist.name}}</td>
 					</tr>
