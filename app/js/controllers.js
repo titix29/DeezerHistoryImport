@@ -1,16 +1,38 @@
 'use strict';
 
 // Controllers
-var deezerImportControllers = angular.module('deezerImportControllers', []);
+var deezerImportControllers = angular.module('deezerImportControllers', ['ngTable']);
 
-deezerImportControllers.controller('DeezerController', ['$scope', 'DeezerSearch', 'DeezerHistory', 
-	function ($scope, DeezerSearch, DeezerHistory) {
+deezerImportControllers.controller('DeezerController', ['$scope', 'DeezerSearch', 'DeezerHistory', '$filter', 'ngTableParams', 
+	function ($scope, DeezerSearch, DeezerHistory, $filter, ngTableParams) {
 		$scope.userName = 'titixies';
 		// get it from http://developers.deezer.com/api/explorer
-		$scope.accessToken = 'frZwXUOfX854cfde31bedf837TfU4ql54cfde31bee38u1sdIk2';
+		$scope.accessToken = 'frkEeL2Zzr54d29d523e896DitEZwXA54d29d523e8cdwnV8lRM';
 		$scope.deezerUser = {};
-		$scope.deezerTracks = [];
+		var deezerTracks = [];
 		$scope.pagesLoaded = 0;
+		
+		// cf. http://stackoverflow.com/questions/19674125/how-do-i-filter-a-row-based-on-any-column-data-with-single-textbox/19676463#19676463
+		$scope.trackFilter = '';
+		$scope.$watch('trackFilter', function () {
+			$scope.tableParams.reload();
+		});
+		
+		$scope.tableParams = new ngTableParams({
+			page: 1,
+			count: 25,
+			sorting: {
+				timestamp: 'asc'
+			}
+		}, {
+			total: deezerTracks.length,
+			getData: function($defer, params) {
+				// use build-in angular filter
+				var filteredData = $scope.trackFilter ? $filter('filter')(deezerTracks, $scope.trackFilter) : deezerTracks;
+				var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : filteredData;
+				$defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+			}
+		})
 
 		$scope.searchUser = function() {
 			console.log('Searching Deezer for user ' + $scope.userName);
@@ -31,7 +53,8 @@ deezerImportControllers.controller('DeezerController', ['$scope', 'DeezerSearch'
 
 			DeezerHistory.get({userId: $scope.deezerUser.id, access_token: $scope.accessToken, index: indexToLoad}, function(data) {
 				if (!data.error) {
-					$scope.deezerTracks = $scope.deezerTracks.concat(data.data);
+					deezerTracks = deezerTracks.concat(data.data);
+					$scope.tableParams.reload();
 					$scope.pagesLoaded++;
 				} else {
 					console.error('Deezer history returned error : ' + data.error.message);
@@ -47,7 +70,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 		// cf. http://www.lastfm.fr/api/accounts
 		$scope.api_key = '0d464d63b340f345585d8321599a91c4';
 		var secret = 'FILL-ME';
-		$scope.accessToken = 'FILL-ME';
+		$scope.accessToken = 'fe54022c4ddb5bd926784db98bebdda5';
 		$scope.lastfmUser = {};
 		$scope.session = {};
 
@@ -87,7 +110,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 			var deezerScope = angular.element(deezerDiv).scope();
 		
 			// convert deezer to lastfm tracks
-			var lastfmTracks = deezerScope.deezerTracks.map(function(track) {
+			var lastfmTracks = deezerScope.tableParams.data.map(function(track) {
 				return {
 					artist: track.artist.name,
 					track: track.title,
