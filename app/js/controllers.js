@@ -65,6 +65,10 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 			});
 		}
 		
+		vm.isHistoryVisible = function() {
+			return vm.deezerTracks.length > 0;
+		}
+		
 		vm.selectAllTracks = function() {
 			vm.deezerTracks.forEach(function(track) {
 				track.selected = !track.selected;

@@ -28,16 +28,15 @@
 		Deezer user <input ng-model="vm.userName" />
 		<input type="button" value="Search" ng-click="vm.searchUser();" /> <br />
 		<!-- Retrieve token from http://developers.deezer.com/api/explorer -->
-		Deezer access token <input ng-model="vm.accessToken" />
+		Deezer access token : {{vm.accessToken}}
 		</p>
 
 		<p>
-			Id : <span>{{vm.deezerUser.id}}</span> <br />
-			Name : <span>{{vm.deezerUser.name}}</span> <br />
+			Id : {{vm.deezerUser.id}}<br />
+			Name : {{vm.deezerUser.name}}<br />
 			<img ng-src="{{vm.deezerUser.picture}}" />
 
-			<!--<div ng-show="{{$data.length}}">-->
-			<div>
+			<div ng-show="vm.isHistoryVisible()">
 				<h2>History</h2>
 				Search: <input type="text" ng-model="vm.trackFilter" />
 				
@@ -63,20 +62,20 @@
 		<p>
 			Last.fm user <input ng-model="vm.userName" />
 			<input type="button" value="Search" ng-click="vm.searchUser();" /> <br />
-			Last.fm access token <span>{{vm.accessToken}}</span>
+			Last.fm access token : {{vm.accessToken}}
 			<a ng-show="vm.accessToken" ng-href="http://www.last.fm/api/auth/?api_key={{vm.api_key}}&token={{vm.accessToken}}" target="_blank">Validate</a>
 			
 			<input type="button" value="Get session" ng-click="vm.getSession();" />
 		</p>
 		
 		<p ng-show="vm.session.key">
-			Connected to last.fm : <span>{{vm.session.key}}</span>
+			Connected to last.fm : {{vm.session.key}}
 			<input type="button" value="Send tracks" ng-click="vm.sendTracks();" />
 		</p>
 		
 		<p>
-			Id : <span>{{vm.lastfmUser.id}}</span> <br />
-			Name : <span>{{vm.lastfmUser.name}}</span> <br />
+			Id : {{vm.lastfmUser.id}}<br />
+			Name : {{vm.lastfmUser.name}}<br />
 			<!-- Third image is the large one -->
 			<img ng-src="{{vm.lastfmUser.image[3]['#text']}}" />
 		</p>
