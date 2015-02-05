@@ -26,9 +26,9 @@
 		<h1>Deezer stuff</h1>
 		<p>
 			Deezer user <input ng-model="vm.userName" />
-			<input type="button" value="Search" ng-click="vm.searchUser();" /> <br />
+			<button class="btn btn-primary" ng-click="vm.searchUser();"><span class="glyphicon glyphicon-music">&nbsp;</span>Search</button><br />
 			<!-- Retrieve token from http://developers.deezer.com/api/explorer -->
-			Deezer access token : {{vm.accessToken}}
+			Deezer token : {{vm.accessToken}}
 		</p>
 
 		<p>
@@ -55,7 +55,8 @@
 					<td data-title="'Artist'" sortable="'artist.name'">{{track.artist.name}}</td>
 				</tr>
 			</table>
-			<input type="button" value="Load more" ng-show="vm.pagesLoaded > 0" ng-click="vm.getUserHistory();"/>
+			
+			<button class="btn" ng-show="vm.pagesLoaded > 0" ng-click="vm.getUserHistory();">Load more</button>
 		</div>
 	</div>
 	
@@ -63,11 +64,11 @@
 		<h1>Last.fm stuff</h1>
 		<p>
 			Last.fm user <input ng-model="vm.userName" />
-			<input type="button" value="Search" ng-click="vm.searchUser();" /> <br />
-			Last.fm access token : {{vm.accessToken}}
-			<a ng-show="vm.accessToken" ng-href="{{vm.getTokenValidationUrl();}}" target="_blank">Validate</a>
+			<button class="btn btn-primary" ng-click="vm.searchUser();"><span class="glyphicon glyphicon-user">&nbsp;</span>Search</button><br />
+			Last.fm token : {{vm.accessToken}}
+			<a ng-show="vm.accessToken" ng-href="{{vm.getTokenValidationUrl();}}" target="_blank">(Validate)</a>
 			
-			<input type="button" value="Get session" ng-show="vm.accessToken" ng-click="vm.getSession();" />
+			<button class="btn btn-info" ng-show="vm.accessToken" ng-click="vm.getSession();"><span class="glyphicon glyphicon-ok">&nbsp;</span>Get session</button>
 		</p>
 		
 		<p>
@@ -83,7 +84,7 @@
 			<h2>Connected</h2>
 			<p>
 				Last.fm connection : {{vm.session.key}}
-				<input type="button" value="Send tracks" ng-click="vm.sendTracks();" />
+				<button class="btn btn-success" ng-click="vm.sendTracks();"><span class="glyphicon glyphicon-thumbs-up">&nbsp;</span>Send tracks</button>
 			</p>
 		</div>
 	</div>
