@@ -15,62 +15,70 @@
 	<script src="js/controllers.js"></script>
 	<script src="js/services.js"></script>
 	
+	<link rel="stylesheet" href="css/bootstrap.css" />
+	<link rel="stylesheet" href="css/style.css" />
 	<link rel="stylesheet" href="css/ng-table.css" />
 </head>
 
 <body>
 
-	<div id="deezerDiv" ng-controller="DeezerController">
+	<div id="deezerDiv" ng-controller="DeezerController as vm">
 		<h1>Deezer stuff</h1>
 		<p>
-		Deezer user <input ng-model="userName" />
-		<input type="button" value="Search" ng-click="searchUser();" /> <br />
+		Deezer user <input ng-model="vm.userName" />
+		<input type="button" value="Search" ng-click="vm.searchUser();" /> <br />
 		<!-- Retrieve token from http://developers.deezer.com/api/explorer -->
-		Deezer access token <input ng-model="accessToken" />
+		Deezer access token <input ng-model="vm.accessToken" />
 		</p>
 
 		<p>
-			Id : <span>{{deezerUser.id}}</span> <br />
-			Name : <span>{{deezerUser.name}}</span> <br />
-			<img ng-src="{{deezerUser.picture}}" />
+			Id : <span>{{vm.deezerUser.id}}</span> <br />
+			Name : <span>{{vm.deezerUser.name}}</span> <br />
+			<img ng-src="{{vm.deezerUser.picture}}" />
 
 			<!--<div ng-show="{{$data.length}}">-->
 			<div>
 				<h2>History</h2>
-				Search: <input type="text" ng-model="trackFilter" />
-				<table ng-table="tableParams">
-					<tr ng-repeat="track in $data">
+				Search: <input type="text" ng-model="vm.trackFilter" />
+				
+				Select all: <input type="checkbox" ng-click="vm.selectAllTracks();" />
+				
+				<strong>{{vm.selectedTracksNb()}} selected tracks</strong>
+				<table ng-table="tableParams" class="table ng-table-rowselected">
+					<tr ng-repeat="track in $data"
+						ng-click="track.selected = !track.selected"
+						ng-class="{'active': track.selected}">
 						<td data-title="'Date'" sortable="'timestamp'">{{track.timestamp * 1000 | date : 'dd/MM/yy HH:mm'}}</td>
 						<td data-title="'Title'" sortable="'title'">{{track.title}}</td>
 						<td data-title="'Artist'" sortable="'artist.name'">{{track.artist.name}}</td>
 					</tr>
 				</table>
-				<input type="button" value="Load more" ng-show="pagesLoaded > 0" ng-click="getUserHistory();"/>
+				<input type="button" value="Load more" ng-show="vm.pagesLoaded > 0" ng-click="vm.getUserHistory();"/>
 			</div>
 		</p>
 	</div>
 	
-	<div id="lastfmDiv" ng-controller="LastfmController">
+	<div id="lastfmDiv" ng-controller="LastfmController as vm">
 		<h1>Last.fm stuff</h1>
 		<p>
-			Last.fm user <input ng-model="userName" />
-			<input type="button" value="Search" ng-click="searchUser();" /> <br />
-			Last.fm access token <span>{{accessToken}}</span>
-			<a ng-show="accessToken" ng-href="http://www.last.fm/api/auth/?api_key={{api_key}}&token={{accessToken}}" target="_blank">Validate</a>
+			Last.fm user <input ng-model="vm.userName" />
+			<input type="button" value="Search" ng-click="vm.searchUser();" /> <br />
+			Last.fm access token <span>{{vm.accessToken}}</span>
+			<a ng-show="vm.accessToken" ng-href="http://www.last.fm/api/auth/?api_key={{vm.api_key}}&token={{vm.accessToken}}" target="_blank">Validate</a>
 			
-			<input type="button" value="Get session" ng-click="getSession();" />
+			<input type="button" value="Get session" ng-click="vm.getSession();" />
 		</p>
 		
-		<p ng-show="session.key">
-			Connected to last.fm : <span>{{session.key}}</span>
-			<input type="button" value="Send tracks" ng-click="sendTracks();" />
+		<p ng-show="vm.session.key">
+			Connected to last.fm : <span>{{vm.session.key}}</span>
+			<input type="button" value="Send tracks" ng-click="vm.sendTracks();" />
 		</p>
 		
 		<p>
-			Id : <span>{{lastfmUser.id}}</span> <br />
-			Name : <span>{{lastfmUser.name}}</span> <br />
+			Id : <span>{{vm.lastfmUser.id}}</span> <br />
+			Name : <span>{{vm.lastfmUser.name}}</span> <br />
 			<!-- Third image is the large one -->
-			<img ng-src="{{lastfmUser.image[3]['#text']}}" />
+			<img ng-src="{{vm.lastfmUser.image[3]['#text']}}" />
 		</p>
 	</div>
 

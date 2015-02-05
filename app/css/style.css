@@ -1,0 +1,7 @@
+.ng-table-rowselected tr {
+    cursor: pointer;
+}
+
+tr.active > td {
+	font-style: italic;
+}
