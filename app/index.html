@@ -63,9 +63,9 @@
 			Last.fm user <input ng-model="vm.userName" />
 			<input type="button" value="Search" ng-click="vm.searchUser();" /> <br />
 			Last.fm access token : {{vm.accessToken}}
-			<a ng-show="vm.accessToken" ng-href="http://www.last.fm/api/auth/?api_key={{vm.api_key}}&token={{vm.accessToken}}" target="_blank">Validate</a>
+			<a ng-show="vm.accessToken" ng-href="{{vm.getTokenValidationUrl();}}" target="_blank">Validate</a>
 			
-			<input type="button" value="Get session" ng-click="vm.getSession();" />
+			<input type="button" value="Get session" ng-show="vm.accessToken" ng-click="vm.getSession();" />
 		</p>
 		
 		<p ng-show="vm.session.key">

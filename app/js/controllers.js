@@ -89,9 +89,10 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 	
 		vm.userName = 'titix29';
 		// cf. http://www.lastfm.fr/api/accounts
-		vm.api_key = '0d464d63b340f345585d8321599a91c4';
+		var api_key = '0d464d63b340f345585d8321599a91c4';
 		var secret = '';
 		vm.accessToken = '';
+		
 		vm.lastfmUser = {};
 		vm.session = {};
 
@@ -99,7 +100,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 			console.log('Searching Lastfm for user ' + vm.userName);
 			
 			// Call last.fm search
-			LastfmService.get(vm.userName, vm.api_key)
+			LastfmService.get(vm.userName, api_key)
 				.success(function(data) {
 					vm.lastfmUser = data.user;
 					console.log('Found user ' + vm.lastfmUser.name);
@@ -109,7 +110,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 		}
 		
 		vm.getToken = function() {
-			LastfmService.getToken(vm.api_key, secret, function(data) {
+			LastfmService.getToken(api_key, secret, function(data) {
 				console.log('getToken returned : ' + data.token);
 				vm.accessToken = data.token;
 				
@@ -118,8 +119,12 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 			});
 		}
 		
+		vm.getTokenValidationUrl = function() {
+			return "http://www.last.fm/api/auth/?api_key=" + api_key + "&token=" + vm.accessToken;
+		}
+		
 		vm.getSession = function() {
-			LastfmService.getSession(vm.accessToken, vm.api_key, secret, function(data) {
+			LastfmService.getSession(vm.accessToken, api_key, secret, function(data) {
 				console.log('getSession returned : ' + data.session);
 				vm.session = data.session;
 				$scope.$apply();
@@ -148,7 +153,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 			// cf. http://stackoverflow.com/questions/11318680/split-array-into-chunks-of-n-length for splicing
 			var batchSize = 50;
 			while(lastfmTracks.length > 0) {
-				LastfmService.sendTracks(lastfmTracks.splice(0, batchSize), vm.session, vm.api_key, secret);
+				LastfmService.sendTracks(lastfmTracks.splice(0, batchSize), vm.session, api_key, secret);
 			}
 		}
 	}
