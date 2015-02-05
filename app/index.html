@@ -22,42 +22,44 @@
 
 <body>
 
-	<div id="deezerDiv" ng-controller="DeezerController as vm">
+	<div id="deezerDiv" ng-controller="DeezerController as vm" class="col-md-8">
 		<h1>Deezer stuff</h1>
 		<p>
-		Deezer user <input ng-model="vm.userName" />
-		<input type="button" value="Search" ng-click="vm.searchUser();" /> <br />
-		<!-- Retrieve token from http://developers.deezer.com/api/explorer -->
-		Deezer access token : {{vm.accessToken}}
+			Deezer user <input ng-model="vm.userName" />
+			<input type="button" value="Search" ng-click="vm.searchUser();" /> <br />
+			<!-- Retrieve token from http://developers.deezer.com/api/explorer -->
+			Deezer access token : {{vm.accessToken}}
 		</p>
 
 		<p>
-			Id : {{vm.deezerUser.id}}<br />
-			Name : {{vm.deezerUser.name}}<br />
-			<img ng-src="{{vm.deezerUser.picture}}" />
-
-			<div ng-show="vm.isHistoryVisible()">
-				<h2>History</h2>
-				Search: <input type="text" ng-model="vm.trackFilter" />
-				
-				Select all: <input type="checkbox" ng-click="vm.selectAllTracks();" />
-				
-				<strong>{{vm.selectedTracksNb()}} selected tracks</strong>
-				<table ng-table="tableParams" class="table ng-table-rowselected">
-					<tr ng-repeat="track in $data"
-						ng-click="track.selected = !track.selected"
-						ng-class="{'active': track.selected}">
-						<td data-title="'Date'" sortable="'timestamp'">{{track.timestamp * 1000 | date : 'dd/MM/yy HH:mm'}}</td>
-						<td data-title="'Title'" sortable="'title'">{{track.title}}</td>
-						<td data-title="'Artist'" sortable="'artist.name'">{{track.artist.name}}</td>
-					</tr>
-				</table>
-				<input type="button" value="Load more" ng-show="vm.pagesLoaded > 0" ng-click="vm.getUserHistory();"/>
+			<div class="avatarInfo">
+				Id : {{vm.deezerUser.id}}<br />
+				Name : {{vm.deezerUser.name}}<br />
 			</div>
+			<img ng-src="{{vm.deezerUser.picture}}" />
 		</p>
+
+		<div ng-show="vm.isHistoryVisible()">
+			<h2>History</h2>
+			<p>
+				Search: <input type="text" ng-model="vm.trackFilter" />
+				Select all: <input type="checkbox" ng-click="vm.selectAllTracks();" />
+				<strong>{{vm.selectedTracksNb()}} selected tracks</strong>
+			</p>
+			<table ng-table="tableParams" class="table ng-table-rowselected">
+				<tr ng-repeat="track in $data"
+					ng-click="track.selected = !track.selected"
+					ng-class="{'active': track.selected}">
+					<td data-title="'Date'" sortable="'timestamp'">{{track.timestamp * 1000 | date : 'dd/MM/yy HH:mm'}}</td>
+					<td data-title="'Title'" sortable="'title'">{{track.title}}</td>
+					<td data-title="'Artist'" sortable="'artist.name'">{{track.artist.name}}</td>
+				</tr>
+			</table>
+			<input type="button" value="Load more" ng-show="vm.pagesLoaded > 0" ng-click="vm.getUserHistory();"/>
+		</div>
 	</div>
 	
-	<div id="lastfmDiv" ng-controller="LastfmController as vm">
+	<div id="lastfmDiv" ng-controller="LastfmController as vm" class="col-md-4">
 		<h1>Last.fm stuff</h1>
 		<p>
 			Last.fm user <input ng-model="vm.userName" />
@@ -68,18 +70,22 @@
 			<input type="button" value="Get session" ng-show="vm.accessToken" ng-click="vm.getSession();" />
 		</p>
 		
-		<p ng-show="vm.session.key">
-			Connected to last.fm : {{vm.session.key}}
-			<input type="button" value="Send tracks" ng-click="vm.sendTracks();" />
+		<p>
+			<div class="avatarInfo">
+				Id : {{vm.lastfmUser.id}}<br />
+				Name : {{vm.lastfmUser.name}}<br />
+			</div>
+			<!-- Third image is the large one -->
+			<img ng-src="{{vm.lastfmUser.image[2]['#text']}}" />
 		</p>
 		
-		<p>
-			Id : {{vm.lastfmUser.id}}<br />
-			Name : {{vm.lastfmUser.name}}<br />
-			<!-- Third image is the large one -->
-			<img ng-src="{{vm.lastfmUser.image[3]['#text']}}" />
-		</p>
+		<div ng-show="vm.session.key">
+			<h2>Connected</h2>
+			<p>
+				Last.fm connection : {{vm.session.key}}
+				<input type="button" value="Send tracks" ng-click="vm.sendTracks();" />
+			</p>
+		</div>
 	</div>
-
 </body>
 </html>

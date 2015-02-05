@@ -9,7 +9,7 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 	
 		vm.userName = 'titixies';
 		// get it from http://developers.deezer.com/api/explorer
-		vm.accessToken = 'fruSZ4cSK754d3d71464242ItO0enRO54d3d7146427aBofpBrA';
+		vm.accessToken = 'frysp4DAqC54d3e5255efd6pTlXPs0V54d3e5255f014LIYnE9w';
 		vm.deezerUser = {};
 		
 		vm.deezerTracks = [];
