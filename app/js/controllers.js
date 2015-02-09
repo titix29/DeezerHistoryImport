@@ -1,5 +1,10 @@
 'use strict';
 
+/*
+TODOs
+	- button to search all tracks not scrobbled after last date on last.fm
+*/
+
 // Controllers
 var deezerImportControllers = angular.module('deezerImportControllers', ['ngTable']);
 
@@ -9,7 +14,7 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 	
 		vm.userName = 'titixies';
 		// get it from http://developers.deezer.com/api/explorer
-		vm.accessToken = 'frysp4DAqC54d3e5255efd6pTlXPs0V54d3e5255f014LIYnE9w';
+		vm.accessToken = 'frVIv7nCLc54d91322ad5a80ZygB1va54d91322ad5dfmb8ZPy7';
 		vm.deezerUser = {};
 		
 		vm.deezerTracks = [];
@@ -86,6 +91,9 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService', 
 	function ($scope, LastfmService) {
 		var vm = this;
+		
+		// cannot use $location.search() here (cf. https://github.com/angular/angular.js/issues/1417)
+		var debugMode = window.location.search.indexOf("debug=true") > -1;
 	
 		vm.userName = 'titix29';
 		// cf. http://www.lastfm.fr/api/accounts
@@ -94,7 +102,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 		vm.accessToken = '';
 		
 		vm.lastfmUser = {};
-		vm.session = {};
+		vm.session = debugMode ? {key: ''} : {};
 
 		vm.searchUser = function() {
 			console.log('Searching Lastfm for user ' + vm.userName);
