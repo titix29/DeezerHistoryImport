@@ -44,7 +44,8 @@
 			<p>
 				Search: <input type="text" ng-model="vm.trackFilter" />
 				Select all: <input type="checkbox" ng-click="vm.selectAllTracks();" />
-				<strong>{{vm.selectedTracksNb()}} selected tracks</strong>
+				Smart select: <input type="checkbox" ng-click="vm.smartSelectTracks();" />
+				<span class="selectedTracksInfo">{{vm.selectedTracksNb()}} selected tracks</span>
 			</p>
 			<table ng-table="tableParams" class="table ng-table-rowselected">
 				<tr ng-repeat="track in $data"
@@ -75,12 +76,15 @@
 			<div class="avatarInfo">
 				Id : {{vm.lastfmUser.id}}<br />
 				Name : {{vm.lastfmUser.name}}<br />
+				<span ng-show="vm.lastTrack.date">
+				Last track : {{vm.lastTrack.artist['#text']}} - {{vm.lastTrack.name}} ({{vm.lastTrack.date.uts * 1000 | date : 'dd/MM/yy HH:mm'}})
+				</span>
 			</div>
 			<!-- Third image is the large one -->
 			<img ng-src="{{vm.lastfmUser.image[2]['#text']}}" />
 		</p>
 		
-		<div ng-show="vm.session.key">
+		<div ng-show="vm.session.key" class="connectionStatus">
 			<h2>Connected</h2>
 			<p>
 				Last.fm connection : {{vm.session.key}}

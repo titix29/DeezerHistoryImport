@@ -3,6 +3,16 @@
 	margin-right: 10px;
 }
 
+.selectedTracksInfo {
+	font-weight: bold;
+	float: right;
+}
+
+.connectionStatus {
+	/* Avoid flickering effect */
+	margin-top: 40px;
+}
+
 .ng-table-rowselected tr {
     cursor: pointer;
 }

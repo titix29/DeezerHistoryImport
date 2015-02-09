@@ -2,7 +2,6 @@
 
 /*
 TODOs
-	- button to search all tracks not scrobbled after last date on last.fm
 */
 
 // Controllers
@@ -14,7 +13,7 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 	
 		vm.userName = 'titixies';
 		// get it from http://developers.deezer.com/api/explorer
-		vm.accessToken = 'frVIv7nCLc54d91322ad5a80ZygB1va54d91322ad5dfmb8ZPy7';
+		vm.accessToken = 'frqkNd9i8q54d921329462cbrprekOi54d9213294664o82qcey';
 		vm.deezerUser = {};
 		
 		vm.deezerTracks = [];
@@ -80,6 +79,17 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 			});
 		}
 		
+		// Select all tracks that have not been scrobbled
+		vm.smartSelectTracks = function() {
+			// cf. http://stackoverflow.com/questions/25417162/how-do-i-inject-a-controller-into-another-controller-in-angularjs
+			var lastfmDiv = document.getElementById('lastfmDiv');
+			var lastfmScope = angular.element(lastfmDiv).scope();
+			var lastScrobble = lastfmScope.vm.lastTrack.date.uts;
+			vm.deezerTracks.forEach(function(track) {
+				track.selected = track.timestamp > lastScrobble;
+			});
+		}
+		
 		vm.selectedTracksNb = function() {
 			return vm.deezerTracks.filter(function(tr) {
 				return tr.selected
@@ -102,6 +112,8 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 		vm.accessToken = '';
 		
 		vm.lastfmUser = {};
+		vm.lastTrack = {};
+		
 		vm.session = debugMode ? {key: ''} : {};
 
 		vm.searchUser = function() {
@@ -139,6 +151,14 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 			});
 		}
 		
+		vm.getLastTrack = function() {
+			LastfmService.getRecentTracks(vm.userName, api_key, secret, function(data) {
+				console.log('getLastTrackDate returned : ' + data.recenttracks);
+				vm.lastTrack = data.recenttracks.track[0];
+				$scope.$apply();
+			});
+		}
+		
 		vm.sendTracks = function() {
 			// cf. http://stackoverflow.com/questions/25417162/how-do-i-inject-a-controller-into-another-controller-in-angularjs
 			var deezerDiv = document.getElementById('deezerDiv');
@@ -164,5 +184,8 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 				LastfmService.sendTracks(lastfmTracks.splice(0, batchSize), vm.session, api_key, secret);
 			}
 		}
+		
+		// Retrieve last track
+		vm.getLastTrack();
 	}
 ]);
