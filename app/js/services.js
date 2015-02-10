@@ -3,11 +3,14 @@
 // Services
 var deezerImportServices = angular.module('deezerImportServices', ['ngResource']);
 
+var deezerRoot = 'https://api.deezer.com';
+var lastfmRoot = 'https://ws.audioscrobbler.com/2.0';
+
 // Deezer API does not support CORS so we need to use JSONP to retrieve data
 deezerImportServices.factory('DeezerSearch', ['$resource', 
 	function($resource) {
 		// output get param is for Deezer to return JSONP content
-		return $resource('http://api.deezer.com/search/user', {callback: 'JSON_CALLBACK', output: 'jsonp'}, {
+		return $resource(deezerRoot + '/search/user', {callback: 'JSON_CALLBACK', output: 'jsonp'}, {
 			// JSONP method is for Angular.js to process JSONP content
 			get: {method: 'JSONP'}
 		});
@@ -16,7 +19,7 @@ deezerImportServices.factory('DeezerSearch', ['$resource',
 
 deezerImportServices.factory('DeezerHistory', ['$resource', 
 	function($resource) {
-		return $resource('http://api.deezer.com/user/:userId/history', {callback: 'JSON_CALLBACK', output: 'jsonp'}, {
+		return $resource(deezerRoot + '/user/:userId/history', {callback: 'JSON_CALLBACK', output: 'jsonp'}, {
 			get: {method: 'JSONP'}
 		});
 	}
@@ -25,7 +28,7 @@ deezerImportServices.factory('DeezerHistory', ['$resource',
 deezerImportServices.factory('LastfmService', ['$http', function($http) {
 	return {
 		get: function(userName, apiKey) {
-			return $http.get('http://ws.audioscrobbler.com/2.0', {
+			return $http.get(lastfmRoot, {
 				params: {
 					method: 'user.getinfo', 
 					format: 'json',
@@ -63,6 +66,7 @@ deezerImportServices.factory('LastfmService', ['$http', function($http) {
 function getLastFM(key, secret) {
 	return new LastFM({
 		apiKey: key,
-		apiSecret: secret
+		apiSecret: secret,
+		apiUrl: lastfmRoot
 	});
 }
