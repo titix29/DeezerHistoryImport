@@ -4,7 +4,7 @@
 var deezerImportServices = angular.module('deezerImportServices', ['ngResource']);
 
 var deezerRoot = 'https://api.deezer.com';
-var lastfmRoot = 'https://ws.audioscrobbler.com/2.0';
+var lastfmRoot = 'https://ws.audioscrobbler.com/2.0/';
 
 // Deezer API does not support CORS so we need to use JSONP to retrieve data
 deezerImportServices.factory('DeezerSearch', ['$resource', 
