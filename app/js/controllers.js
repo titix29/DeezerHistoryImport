@@ -1,7 +1,9 @@
 'use strict';
 
 /*
-TODOs
+TODOs : 
+	- test full JS deployment using node.js (http://azure.microsoft.com/fr-fr/documentation/articles/web-sites-nodejs-develop-deploy-mac/)
+	- fix bug when filtering results : filter applies to whole data including deezer album (which is not displayed)
 */
 
 // Controllers
@@ -102,25 +104,29 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 	function ($scope, LastfmService) {
 		var vm = this;
 		
-		// cannot use $location.search() here (cf. https://github.com/angular/angular.js/issues/1417)
-		var debugMode = window.location.search.indexOf("debug=true") > -1;
-	
 		vm.userName = 'titix29';
 		// cf. http://www.lastfm.fr/api/accounts
-		var api_key = '0d464d63b340f345585d8321599a91c4';
-		var secret = '';
+		vm.api_key = '0d464d63b340f345585d8321599a91c4';
+		vm.secret = '';
 		vm.accessToken = '';
 		
 		vm.lastfmUser = {};
 		vm.lastTrack = {};
 		
-		vm.session = debugMode ? {key: ''} : {};
+		// cannot use $location.search() here (cf. https://github.com/angular/angular.js/issues/1417)
+		var debugIndex = window.location.search.indexOf("session="); 
+		var debugMode = debugIndex > -1;
+		if (debugMode) {
+			vm.session = {key: window.location.search.substring(debugIndex + "session=".length) };
+		} else {
+			vm.session = {};
+		}
 
 		vm.searchUser = function() {
 			console.log('Searching Lastfm for user ' + vm.userName);
 			
 			// Call last.fm search
-			LastfmService.get(vm.userName, api_key)
+			LastfmService.get(vm.userName, vm.api_key)
 				.success(function(data) {
 					vm.lastfmUser = data.user;
 					console.log('Found user ' + vm.lastfmUser.name);
@@ -130,7 +136,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 		}
 		
 		vm.getToken = function() {
-			LastfmService.getToken(api_key, secret, function(data) {
+			LastfmService.getToken(vm.api_key, vm.secret, function(data) {
 				console.log('getToken returned : ' + data.token);
 				vm.accessToken = data.token;
 				
@@ -140,11 +146,11 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 		}
 		
 		vm.getTokenValidationUrl = function() {
-			return "http://www.last.fm/api/auth/?api_key=" + api_key + "&token=" + vm.accessToken;
+			return "http://www.last.fm/api/auth/?api_key=" + vm.api_key + "&token=" + vm.accessToken;
 		}
 		
 		vm.getSession = function() {
-			LastfmService.getSession(vm.accessToken, api_key, secret, function(data) {
+			LastfmService.getSession(vm.accessToken, vm.api_key, vm.secret, function(data) {
 				console.log('getSession returned : ' + data.session);
 				vm.session = data.session;
 				$scope.$apply();
@@ -152,7 +158,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 		}
 		
 		vm.getLastTrack = function() {
-			LastfmService.getRecentTracks(vm.userName, api_key, secret, function(data) {
+			LastfmService.getRecentTracks(vm.userName, vm.api_key, vm.secret, function(data) {
 				console.log('getLastTrackDate returned : ' + data.recenttracks);
 				vm.lastTrack = data.recenttracks.track[0];
 				$scope.$apply();
@@ -181,7 +187,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 			// cf. http://stackoverflow.com/questions/11318680/split-array-into-chunks-of-n-length for splicing
 			var batchSize = 50;
 			while(lastfmTracks.length > 0) {
-				LastfmService.sendTracks(lastfmTracks.splice(0, batchSize), vm.session, api_key, secret);
+				LastfmService.sendTracks(lastfmTracks.splice(0, batchSize), vm.session, vm.api_key, vm.secret);
 			}
 		}
 		
