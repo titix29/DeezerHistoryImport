@@ -64,9 +64,9 @@
 	<div id="lastfmDiv" ng-controller="LastfmController as vm" class="col-md-4">
 		<h1>Last.fm stuff</h1>
 		<p>
-			Last.fm user <input ng-model="vm.userName" /><br />
-			Last.fm secret <input ng-model="vm.secret" size="32" />
+			Last.fm user <input ng-model="vm.userName" />
 			<button class="btn btn-primary" ng-click="vm.searchUser();"><span class="glyphicon glyphicon-user">&nbsp;</span>Search</button><br />
+			Last.fm secret <input ng-model="vm.secret" size="32" /><br />
 			Last.fm token : {{vm.accessToken}}
 			<a ng-show="vm.accessToken" ng-href="{{vm.getTokenValidationUrl();}}" target="_blank">(Validate)</a>
 			
