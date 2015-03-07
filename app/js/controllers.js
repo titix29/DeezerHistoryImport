@@ -2,9 +2,13 @@
 
 /*
 TODOs : 
-	- pagination when results > 100
 	- test full JS deployment using node.js (http://azure.microsoft.com/fr-fr/documentation/articles/web-sites-nodejs-develop-deploy-mac/)
 	- fix bug when filtering results : filter applies to whole data including deezer album (which is not displayed)
+*/
+
+/*
+NOTES : 
+	- last.fm returns error when scrobbling tracks to far in the past (2 weeks), cf. https://twitter.com/lastfmsupport/status/400948218764472320
 */
 
 // Controllers
@@ -16,10 +20,11 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 	
 		vm.userName = 'titixies';
 		// get it from http://developers.deezer.com/api/explorer
-		vm.accessToken = 'frqkNd9i8q54d921329462cbrprekOi54d9213294664o82qcey';
+		vm.accessToken = 'frsnOWMvL654fabfcfc8383Az9tkson54fabfcfc88a0tY8NdF9';
 		vm.deezerUser = {};
 		
 		vm.deezerTracks = [];
+		// used for Deezer query pagination
 		vm.pagesLoaded = 0;
 		
 		// cf. http://stackoverflow.com/questions/19674125/how-do-i-filter-a-row-based-on-any-column-data-with-single-textbox/19676463#19676463
@@ -37,6 +42,9 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 		}, {
 			total: 0,
 			getData: function($defer, params) {
+				// update total
+				params.total(vm.deezerTracks.length);
+			
 				// use build-in angular filter
 				var filteredData = vm.trackFilter ? $filter('filter')(vm.deezerTracks, vm.trackFilter) : vm.deezerTracks;
 				var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : filteredData;
