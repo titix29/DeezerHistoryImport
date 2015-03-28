@@ -22,7 +22,7 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 	
 		vm.userName = 'titixies';
 		// get it from http://developers.deezer.com/api/explorer
-		vm.accessToken = 'frsnOWMvL654fabfcfc8383Az9tkson54fabfcfc88a0tY8NdF9';
+		vm.accessToken = 'frZH1uOBrb5516a9bad3528d6ij7fKf5516a9bad3560JQU6j5p';
 		vm.deezerUser = {};
 		
 		vm.deezerTracks = [];
@@ -204,7 +204,13 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 			// cf. http://stackoverflow.com/questions/11318680/split-array-into-chunks-of-n-length for splicing
 			var batchSize = 50;
 			while(lastfmTracks.length > 0) {
-				LastfmService.sendTracks(lastfmTracks.splice(0, batchSize), vm.session, vm.api_key, vm.secret);
+				LastfmService.sendTracks(lastfmTracks.splice(0, batchSize), vm.session, vm.api_key, vm.secret, 
+					function(data) {
+						console.log('sendTracks returned : ' + data);
+					},
+					function(error, data) {
+						console.error('sendTracks returned : ' + error + ' ' + data);
+					});
 			}
 		}
 		

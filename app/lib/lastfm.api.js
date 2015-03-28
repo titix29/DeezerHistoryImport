@@ -36,59 +36,37 @@ function LastFM(options){
 
 	/* Internal call (POST, GET). */
 	var internalCall = function(params, callbacks, requestMethod){
-		/* Cross-domain POST request (doesn't return any data, always successful). */
+		// Cross-domain POST request
 		if(requestMethod == 'POST'){
-			/* Create iframe element to post data. */
-			var html   = document.getElementsByTagName('html')[0];
-			var iframe = document.createElement('iframe');
-			var doc;
-
-			/* Set iframe attributes. */
-			iframe.width        = 1;
-			iframe.height       = 1;
-			iframe.style.border = 'none';
-			iframe.onload       = function(){
-				/* Remove iframe element. */
-				//html.removeChild(iframe);
-
-				/* Call user callback. */
-				if(typeof(callbacks.success) != 'undefined'){
-					callbacks.success();
-				}
-			};
-
-			/* Append iframe. */
-			html.appendChild(iframe);
-
-			/* Get iframe document. */
-			if(typeof(iframe.contentWindow) != 'undefined'){
-				doc = iframe.contentWindow.document;
-			}
-			else if(typeof(iframe.contentDocument.document) != 'undefined'){
-				doc = iframe.contentDocument.document.document;
-			}
-			else{
-				doc = iframe.contentDocument.document;
-			}
-
-			/* Open iframe document and write a form. */
-			doc.open();
-			doc.clear();
-			doc.write('<form method="post" action="' + apiUrl + '" id="form">');
-
-			/* Write POST parameters as input fields. */
-			for(var param in params){
-				doc.write('<input type="text" name="' + param + '" value="' + params[param] + '">');
-			}
-
-			/* Write automatic form submission code. */
-			doc.write('</form>');
-			doc.write('<script type="application/x-javascript">');
-			doc.write('document.getElementById("form").submit();');
-			doc.write('</script>');
-
-			/* Close iframe document. */
-			doc.close();
+			// Xavier : change old API to use angularjs $http and get rid of iframe and enable callbacks on POST requests
+			
+			// 1 - retrieve angularjs context
+			var injector = angular.element(document).injector();
+			var http = injector.get("$http");
+			
+			// 2 - send request
+			http.post(apiUrl, params, {
+					headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+					// Convert JSON to URL-encoded FORM data
+					// cf. http://stackoverflow.com/questions/24710503/how-do-i-post-urlencoded-form-data-with-http-in-angularjs
+					transformRequest: function(obj) {
+						var str = [];
+						for (var p in obj) {
+							str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+						}
+						return str.join("&");
+					}
+				})
+				.success(function(data) {
+					if(typeof(callbacks.success) != 'undefined'){
+						callbacks.success(data);
+					}
+				})
+				.error(function(data, status) {
+					if(typeof(callbacks.error) != 'undefined'){
+						callbacks.error(status, data);
+					}
+				});
 		}
 		/* Cross-domain GET request (JSONP). */
 		else{
