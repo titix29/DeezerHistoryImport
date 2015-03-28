@@ -20,8 +20,8 @@ var deezerImportControllers = angular.module('deezerImportControllers', ['ngTabl
 											$httpProvider.interceptors.push('xmlHttpInterceptor');
 										});
 
-deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ngTableParams', 'toaster', 'DeezerSearch', 'DeezerHistory', 
-	function ($scope, $filter, ngTableParams, toaster, DeezerSearch, DeezerHistory) {
+deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ngTableParams', 'toaster', 'DeezerSearch',
+	function ($scope, $filter, ngTableParams, toaster, DeezerSearch) {
 		var vm = this;
 	
 		vm.userName = 'titixies';
@@ -58,11 +58,11 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 			}
 		})
 
-		vm.searchUser = function() {
+		vm.getUser = function() {
 			console.log('Searching Deezer for user ' + vm.userName);
 			
 			// Call deezer search
-			DeezerSearch.get({q: vm.userName}, function(data) {
+			DeezerSearch.getUser(vm.userName).success(function(data) {
 				vm.deezerUser = data.data[0];
 				console.log('Found user ' + vm.deezerUser.id);
 
@@ -75,7 +75,7 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 			console.log('Getting history for user ' + vm.deezerUser.name);
 			var indexToLoad = 50 * vm.pagesLoaded;
 
-			DeezerHistory.get({userId: vm.deezerUser.id, access_token: vm.accessToken, index: indexToLoad}, function(data) {
+			DeezerSearch.getUserHistory(vm.deezerUser.id, vm.accessToken, indexToLoad).success(function(data) {
 				if (!data.error) {
 					vm.deezerTracks = vm.deezerTracks.concat(data.data);
 					$scope.tableParams.reload();
@@ -147,13 +147,12 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'toaster', 'La
 			console.log('Searching Lastfm for user ' + vm.userName);
 			
 			// Call last.fm search
-			LastfmService.get(vm.userName, vm.api_key)
-				.success(function(data) {
-					vm.lastfmUser = data.user;
-					console.log('Found user ' + vm.lastfmUser.name);
-					
-					vm.getToken();
-				});
+			LastfmService.get(vm.userName, vm.api_key).success(function(data) {
+				vm.lastfmUser = data.user;
+				console.log('Found user ' + vm.lastfmUser.name);
+				
+				vm.getToken();
+			});
 		}
 		
 		vm.getToken = function() {
