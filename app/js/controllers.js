@@ -129,6 +129,9 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 		var debugMode = debugIndex > -1;
 		if (debugMode) {
 			vm.session = {key: window.location.search.substring(debugIndex + "session=".length) };
+			
+			var secretIndex = window.location.search.indexOf("secret=");
+			vm.secret = window.location.search.substring(secretIndex + "secret=".length);
 		} else {
 			vm.session = {};
 		}
