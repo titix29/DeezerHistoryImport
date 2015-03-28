@@ -53,9 +53,6 @@ deezerImportServices.factory('LastfmService', ['$http', function($http) {
 			srv.user.getRecentTracks({user: userName}, {success: successFn});
 		},
 		
-		// NOTE: this POST request never returns data (JS API limitation) so no callback is passed 
-		// (check https://github.com/fxb/javascript-last.fm-api "Write methods")
-		// To debug : check network traffic with Chrome
 		sendTracks: function(tracks, session, apiKey, secret, successFn, errorFn) {
 			var srv = getLastFM(apiKey, secret);
 			srv.track.scrobble(tracks, session, {success: successFn, error: errorFn});

@@ -14,7 +14,12 @@ NOTES :
 */
 
 // Controllers
-var deezerImportControllers = angular.module('deezerImportControllers', ['ngTable']);
+var deezerImportControllers = angular.module('deezerImportControllers', ['ngTable', 'ngAnimate', 'toaster', 'xml'])
+										.config(function ($httpProvider) {
+											// JSON <=> XML conversion
+											// https://github.com/johngeorgewright/angular-xml
+											$httpProvider.interceptors.push('xmlHttpInterceptor');
+										});
 
 deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ngTableParams', 'DeezerSearch', 'DeezerHistory', 
 	function ($scope, $filter, ngTableParams, DeezerSearch, DeezerHistory) {
@@ -22,7 +27,7 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 	
 		vm.userName = 'titixies';
 		// get it from http://developers.deezer.com/api/explorer
-		vm.accessToken = 'frZH1uOBrb5516a9bad3528d6ij7fKf5516a9bad3560JQU6j5p';
+		vm.accessToken = 'frsR1owr5O5516b8807dda01SaXqtCt5516b8807ddd8G8ZjXqw';
 		vm.deezerUser = {};
 		
 		vm.deezerTracks = [];
@@ -111,8 +116,8 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 	}
 ]);
 
-deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService', 
-	function ($scope, LastfmService) {
+deezerImportControllers.controller('LastfmController', ['$scope', 'toaster', 'LastfmService', 
+	function ($scope, toaster, LastfmService) {
 		var vm = this;
 		
 		vm.userName = 'titix29';
@@ -207,9 +212,11 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'LastfmService
 				LastfmService.sendTracks(lastfmTracks.splice(0, batchSize), vm.session, vm.api_key, vm.secret, 
 					function(data) {
 						console.log('sendTracks returned : ' + data);
+						toaster.pop('success', 'Scrobble OK', data.lfm.scrobbles._accepted + ' scrobble(s) sent');
 					},
-					function(error, data) {
-						console.error('sendTracks returned : ' + error + ' ' + data);
+					function(errorCode, data) {
+						console.error('sendTracks returned : ' + errorCode);
+						toaster.pop('error', 'Scrobble KO', '[' + data.lfm.error._code + '] : ' + data.lfm.error);
 					});
 			}
 		}
