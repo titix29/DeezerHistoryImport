@@ -4,6 +4,8 @@
 TODOs : 
 	- test full JS deployment using node.js (http://azure.microsoft.com/fr-fr/documentation/articles/web-sites-nodejs-develop-deploy-mac/)
 	- fix bug when filtering results : filter applies to whole data including deezer album (which is not displayed)
+	- include HTML5 best practices
+	- Error management
 */
 
 /*
