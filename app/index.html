@@ -71,7 +71,6 @@
 	</div>
 	
 	<div id="lastfmDiv" ng-controller="LastfmController as vm" class="col-md-4">
-		<toaster-container></toaster-container>
 		<h1>Last.fm stuff</h1>
 		<p>
 			Last.fm user <input ng-model="vm.userName" />
@@ -103,5 +102,7 @@
 			</p>
 		</div>
 	</div>
+	
+	<toaster-container toaster-options="{'position-class': 'toast-top-center'}"></toaster-container>
 </body>
 </html>

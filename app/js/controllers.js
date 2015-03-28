@@ -5,7 +5,6 @@ TODOs :
 	- test full JS deployment using node.js (http://azure.microsoft.com/fr-fr/documentation/articles/web-sites-nodejs-develop-deploy-mac/)
 	- fix bug when filtering results : filter applies to whole data including deezer album (which is not displayed)
 	- include HTML5 best practices
-	- Error management
 */
 
 /*
@@ -21,8 +20,8 @@ var deezerImportControllers = angular.module('deezerImportControllers', ['ngTabl
 											$httpProvider.interceptors.push('xmlHttpInterceptor');
 										});
 
-deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ngTableParams', 'DeezerSearch', 'DeezerHistory', 
-	function ($scope, $filter, ngTableParams, DeezerSearch, DeezerHistory) {
+deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ngTableParams', 'toaster', 'DeezerSearch', 'DeezerHistory', 
+	function ($scope, $filter, ngTableParams, toaster, DeezerSearch, DeezerHistory) {
 		var vm = this;
 	
 		vm.userName = 'titixies';
@@ -82,7 +81,7 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 					$scope.tableParams.reload();
 					vm.pagesLoaded++;
 				} else {
-					console.error('Deezer history returned error : ' + data.error.message);
+					toaster.pop('error', 'Deezer history KO', '[' + data.error.code + '] : ' + data.error.message);
 				}
 			});
 		}
