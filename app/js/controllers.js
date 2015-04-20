@@ -24,9 +24,9 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 	function ($scope, $filter, ngTableParams, toaster, DeezerSearch) {
 		var vm = this;
 	
-		vm.userName = 'titixies';
+		vm.userId = '2893644';
 		// get it from http://developers.deezer.com/api/explorer
-		vm.accessToken = 'frsR1owr5O5516b8807dda01SaXqtCt5516b8807ddd8G8ZjXqw';
+		vm.accessToken = 'fryKjjBlDP553532cb6eb35V2tWsLL6553532cb6eb71hGtW61n';
 		vm.deezerUser = {};
 		
 		vm.deezerTracks = [];
@@ -59,11 +59,11 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 		})
 
 		vm.getUser = function() {
-			console.log('Searching Deezer for user ' + vm.userName);
+			console.log('Searching Deezer for user ' + vm.userId);
 			
 			// Call deezer search
-			DeezerSearch.getUser(vm.userName).success(function(data) {
-				vm.deezerUser = data.data[0];
+			DeezerSearch.getUser(vm.userId, vm.accessToken).success(function(data) {
+				vm.deezerUser = data;
 				console.log('Found user ' + vm.deezerUser.id);
 
 				// retrieve history

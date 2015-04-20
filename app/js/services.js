@@ -8,11 +8,14 @@ var lastfmRoot = 'https://ws.audioscrobbler.com/2.0/';
 
 deezerImportServices.factory('DeezerSearch', ['$http', function($http) {
 	return {
-		getUser: function(userName) {
+		getUser: function(userId, accessToken) {
 			// Deezer API does not support CORS so we need to use JSONP to retrieve data
-			return $http.jsonp(deezerRoot + '/search/user', {
+			// sometimes search/user api returns nothing depending on the current country :
+			// see : http://stackoverflow.com/questions/24245128/why-deezer-search-api-is-not-returning-results-on-deployed-cloud-application?rq=1
+			// so we search by id using the token instead
+			return $http.jsonp('https://api.deezer.com/user/' + userId, {
 				params : {
-					q: userName,
+					access_token: accessToken,
 					// enable angularjs JSONP
 					callback: 'JSON_CALLBACK',
 					// force Deezer to return JSONP content
