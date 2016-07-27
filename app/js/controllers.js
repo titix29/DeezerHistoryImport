@@ -143,7 +143,7 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 		}
 		
 		// Retrieve Deezer token if user is already connected to the service (OAuth)
-		vm.getToken();
+		// DOES NOT WORK vm.getToken();
 	}
 ]);
 
