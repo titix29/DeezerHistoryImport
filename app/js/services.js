@@ -47,6 +47,37 @@ deezerImportServices.factory('DeezerSearch', ['$http', function($http) {
 	}
 }]);
 
+deezerImportServices.factory('YoutubeService', ['$http', function($http) {
+	return {
+		getHistoryPlaylistId: function(apiKey, accessToken) {
+			return $http.get('https://www.googleapis.com/youtube/v3/channels', {
+				headers : {
+					Authorization: 'Bearer ' + accessToken
+				},
+				params : {
+					part: 'contentDetails',
+					mine: true,
+					key: apiKey
+				}
+			});
+		},
+		
+		getPlaylistContent: function(apiKey, accessToken, playlistId) {
+			return $http.get('https://www.googleapis.com/youtube/v3/playlistItems', {
+				headers : {
+					Authorization: 'Bearer ' + accessToken
+				},
+				params : {
+					part: 'snippet',
+					playlistId: playlistId,
+					maxResults: 20,
+					key: apiKey
+				}
+			});
+		}
+	}
+}]);
+
 deezerImportServices.factory('LastfmService', ['$http', function($http) {
 	return {
 		get: function(userName, apiKey) {

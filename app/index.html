@@ -30,42 +30,64 @@
 
 <body>
 
-	<div id="deezerDiv" ng-controller="DeezerController as vm" class="col-md-8">
-		<h1>Deezer stuff</h1>
-		<p>
-			Deezer user id <input ng-model="vm.userId" />
-			<button class="btn btn-primary" ng-click="vm.getUser();"><span class="glyphicon glyphicon-music">&nbsp;</span>Search</button><br />
-			<!-- Retrieve token from http://developers.deezer.com/api/explorer -->
-			Deezer token <input ng-model="vm.accessToken" size="52" />
-		</p>
-
-		<p>
-			<div class="avatarInfo">
-				Id : {{vm.deezerUser.id}}<br />
-				Name : {{vm.deezerUser.name}}<br />
-			</div>
-			<img ng-src="{{vm.deezerUser.picture}}" />
-		</p>
-
-		<div ng-show="vm.isHistoryVisible()">
-			<h2>History</h2>
+	<div class="col-md-8">
+		<div id="deezerDiv" ng-controller="DeezerController as vm">
+			<h1>Deezer stuff</h1>
 			<p>
-				Search: <input type="text" ng-model="vm.trackFilter" />
-				Select all: <input type="checkbox" ng-click="vm.selectAllTracks();" />
-				Smart select: <input type="checkbox" ng-click="vm.smartSelectTracks();" />
-				<span class="selectedTracksInfo">{{vm.selectedTracksNb()}} selected tracks</span>
+				Deezer user id <input ng-model="vm.userId" />
+				<button class="btn btn-primary" ng-click="vm.getUser();"><span class="glyphicon glyphicon-music">&nbsp;</span>Search</button><br />
+				<!-- Retrieve token from http://developers.deezer.com/api/explorer -->
+				Deezer token <input ng-model="vm.accessToken" size="52" />
 			</p>
-			<table ng-table="tableParams" class="table ng-table-rowselected">
-				<tr ng-repeat="track in $data"
-					ng-click="track.selected = !track.selected"
-					ng-class="{'active': track.selected}">
-					<td data-title="'Date'" sortable="'timestamp'">{{track.timestamp * 1000 | date : 'dd/MM/yy HH:mm'}}</td>
-					<td data-title="'Title'" sortable="'title'">{{track.title}}</td>
-					<td data-title="'Artist'" sortable="'artist.name'">{{track.artist.name}}</td>
-				</tr>
-			</table>
+
+			<p>
+				<div class="avatarInfo">
+					Id : {{vm.deezerUser.id}}<br />
+					Name : {{vm.deezerUser.name}}<br />
+				</div>
+				<img ng-src="{{vm.deezerUser.picture}}" />
+			</p>
+
+			<div ng-show="vm.isHistoryVisible()">
+				<h2>History</h2>
+				<p>
+					Search: <input type="text" ng-model="vm.trackFilter" />
+					Select all: <input type="checkbox" ng-click="vm.selectAllTracks();" />
+					Smart select: <input type="checkbox" ng-click="vm.smartSelectTracks();" />
+					<span class="selectedTracksInfo">{{vm.selectedTracksNb()}} selected tracks</span>
+				</p>
+				<table ng-table="tableParams" class="table ng-table-rowselected">
+					<tr ng-repeat="track in $data"
+						ng-click="track.selected = !track.selected"
+						ng-class="{'active': track.selected}">
+						<td data-title="'Date'" sortable="'timestamp'">{{track.timestamp * 1000 | date : 'dd/MM/yy HH:mm'}}</td>
+						<td data-title="'Title'" sortable="'title'">{{track.title}}</td>
+						<td data-title="'Artist'" sortable="'artist.name'">{{track.artist.name}}</td>
+					</tr>
+				</table>
+				
+				<button class="btn" ng-show="vm.pagesLoaded > 0" ng-click="vm.getUserHistory();">Load more</button>
+			</div>
+		</div>
+		
+		<div id="youtubeDiv" ng-controller="YoutubeController as vm">
+			<h1>Youtube stuff</h1>
+			<p>Blah
+				<button class="btn btn-primary" ng-click="vm.getHistory();"><span class="glyphicon glyphicon-film">&nbsp;</span>Search</button><br />
+			</p>
 			
-			<button class="btn" ng-show="vm.pagesLoaded > 0" ng-click="vm.getUserHistory();">Load more</button>
+			<div ng-show="vm.isHistoryVisible()">
+				<h2>History</h2>
+				<table class="table ng-table-rowselected">
+					<tr ng-repeat="video in vm.youtubeTracks"
+						ng-click="video.selected = !video.selected"
+						ng-class="{'active': video.selected}">
+						<td><img ng-src="{{video.thumbnail}}" /></td>
+						<td data-title="'Date'" sortable="'timestamp'">{{video.timestamp | date : 'dd/MM/yy HH:mm'}}</td>
+						<td data-title="'Title'" sortable="'title'" ng-title="video.description">{{video.title}}</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 	</div>
 	

@@ -147,6 +147,45 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 	}
 ]);
 
+
+deezerImportControllers.controller('YoutubeController', ['$scope', 'YoutubeService', 
+	function ($scope, YoutubeService) {
+		var vm = this;
+		
+		vm.youtubeTracks = [];
+		
+		var key = '';
+		var accessToken = 'ya29.';
+			
+		vm.getHistory = function() {
+			YoutubeService.getHistoryPlaylistId(key, accessToken).success(function(data) {
+				var historyPlayistId = data.items[0].contentDetails.relatedPlaylists.watchHistory;
+				console.log('Youtube playlist history id : ' + historyPlayistId);
+				
+				vm.getPlaylistContent(historyPlayistId);
+			});
+		}
+		
+		vm.getPlaylistContent = function(playlistId) {
+			YoutubeService.getPlaylistContent(key, accessToken, playlistId).success(function(data) {
+				vm.youtubeTracks = data.items.map(function(ytTrack) {
+					return {
+						title: ytTrack.snippet.title,
+						description: ytTrack.snippet.description,
+						timestamp: ytTrack.snippet.publishedAt,
+						thumbnail: ytTrack.snippet.thumbnails.default.url,
+					}
+				});
+				console.log("Found " + vm.youtubeTracks.length + " Youtube videos");
+			});
+		}
+		
+		vm.isHistoryVisible = function() {
+			return vm.youtubeTracks.length > 0;
+		}
+	}
+]);
+
 deezerImportControllers.controller('LastfmController', ['$scope', 'toaster', 'LastfmService', 
 	function ($scope, toaster, LastfmService) {
 		var vm = this;
