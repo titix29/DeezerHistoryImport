@@ -26,7 +26,7 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 	
 		vm.userId = '2893644';
 		// get it from http://developers.deezer.com/api/explorer
-		vm.accessToken = 'fryKjjBlDP553532cb6eb35V2tWsLL6553532cb6eb71hGtW61n';
+		vm.accessToken = '';
 		vm.deezerUser = {};
 		
 		vm.deezerTracks = [];
@@ -57,6 +57,35 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 				$defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
 			}
 		})
+		
+		vm.getToken = function() {
+			console.log('Retrieving Deezer token');
+			
+			DeezerSearch.getToken().success(function(response) {
+				if (response.status == 302)
+				{
+					// example : Location:https://xcllab.azurewebsites.net#access_token=XXX&expires=0
+					var location = response.headers("Location");
+					var tokenIndex = location.indexOf("access_token=");
+					var start = tokenIndex + "access_token=".length;
+					// TODO : refactor with similar code in last.fm case
+					vm.accessToken = location.substring(start, start + 51);
+				}
+				else
+				{
+					console.log('Unable to retrieve Deezer token from response code ' + response.status + ' and status text : ' + response.statusText);
+				}
+			}).error(function(response) {
+				if (response == null)
+				{
+					console.log('Unable to retrieve Deezer token, probably because of CORS policy / security on Deezer side');
+				}
+				else
+				{
+					console.log('Unable to retrieve Deezer token from response code ' + response.status + ' and status text : ' + response.statusText);
+				}
+			});
+		}
 
 		vm.getUser = function() {
 			console.log('Searching Deezer for user ' + vm.userId);
@@ -112,6 +141,9 @@ deezerImportControllers.controller('DeezerController', ['$scope', '$filter', 'ng
 				return tr.selected
 			}).length;
 		}
+		
+		// Retrieve Deezer token if user is already connected to the service (OAuth)
+		vm.getToken();
 	}
 ]);
 
@@ -132,7 +164,7 @@ deezerImportControllers.controller('LastfmController', ['$scope', 'toaster', 'La
 		var debugIndex = window.location.search.indexOf("session="); 
 		var debugMode = debugIndex > -1;
 		if (debugMode) {
-			// awfull way to retrive query parameter from URL...
+			// awful way to retrive query parameter from URL...
 			var start = debugIndex + "session=".length;
 			vm.session = {key: window.location.search.substring(start, start + 32) };
 			

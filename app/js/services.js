@@ -4,10 +4,19 @@
 var deezerImportServices = angular.module('deezerImportServices', []);
 
 var deezerRoot = 'https://api.deezer.com';
+var deezerOAuth = 'https://connect.deezer.com/oauth/auth.php?';
+var deezerAppId = 154441;
+var deezerRedirect = 'https://xcllab.azurewebsites.net';
 var lastfmRoot = 'https://ws.audioscrobbler.com/2.0/';
 
 deezerImportServices.factory('DeezerSearch', ['$http', function($http) {
 	return {
+		getToken: function() {
+			var url = deezerOAuth + 'app_id=' + deezerAppId + '&redirect_uri=' + deezerRedirect + '&response_type=token&perms=basic_access,email,listening_history,offline_access';
+			console.log("Retrieving token from url : " + url);
+			return $http.head(url);
+		},
+		
 		getUser: function(userId, accessToken) {
 			// Deezer API does not support CORS so we need to use JSONP to retrieve data
 			// sometimes search/user api returns nothing depending on the current country :
